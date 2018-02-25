@@ -42,6 +42,7 @@ trait SSOLogin
 
     protected function getClientParameter(Request $request)
     {
+        if($request->get('client_id')) return $request->toArray();
         $query = parse_url($request->session()->get('url.intended'), PHP_URL_QUERY);
         parse_str($query, $output);
         return $output;
