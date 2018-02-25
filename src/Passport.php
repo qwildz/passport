@@ -334,4 +334,13 @@ class Passport
 
         return new static;
     }
+
+    public static function ssoHasLogedIn()
+    {
+        $query = parse_url(session()->get('url.intended'), PHP_URL_QUERY);
+        parse_str($query, $output);
+        if(isset($output['client_id']) && isset($output['state'])) {
+            session()->put('login.' . $output['client_id'] . '.' . $output['state'], true);
+        }
+    }
 }
