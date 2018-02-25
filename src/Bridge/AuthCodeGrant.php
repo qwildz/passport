@@ -150,7 +150,7 @@ class AuthCodeGrant extends LeagueAuthCodeGrant
 
         $this->database->table('oauth_sessions')->where('code_id', $authCodePayload->auth_code_id)
             ->update([
-                'token_id' => $accessToken,
+                'token_id' => $accessToken->getIdentifier(),
             ]);
 
         // Inject tokens into response type
