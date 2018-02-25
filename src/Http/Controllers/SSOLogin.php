@@ -16,7 +16,7 @@ trait SSOLogin
         $client = $this->getClient($request);
         $parameter = $this->getClientParameter($request);
         if(isset($parameter['client_id']) && isset($parameter['state']) && $client) {
-            return $request->session()->get('login.' . $parameter['client_id'] . '.' . $parameter['state']) != true && !$client->sso;
+            return $request->session()->get('login_' . $parameter['client_id'] . '_' . $parameter['state']) != true && !$client->sso;
         }
 
         return false;
@@ -26,7 +26,7 @@ trait SSOLogin
     {
         $parameter = $this->getClientParameter($request);
         if(isset($parameter['client_id']) && isset($parameter['state'])) {
-            $request->session()->put('login.' . $parameter['client_id'] . '.' . $parameter['state'], true);
+            $request->session()->put('login_' . $parameter['client_id'] . '_' . $parameter['state'], true);
         }
     }
 

@@ -73,7 +73,7 @@ class AuthorizationController
             );
 
             // Client is not permit sso, re-login
-            if(!$client->sso && $request->session()->get('login.'.$client->getKey().'.'.$request->get('state')) != true) {
+            if(!$client->sso && $request->session()->get('login_'.$client->getKey().'_'.$request->get('state')) != true) {
                 return $this->response->redirectGuest($url->route('login'));
             }
 
