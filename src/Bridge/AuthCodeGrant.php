@@ -40,11 +40,9 @@ class AuthCodeGrant extends LeagueAuthCodeGrant
         \DateInterval $authCodeTTL,
         Connection $database
     ) {
-        $this->setAuthCodeRepository($authCodeRepository);
-        $this->setRefreshTokenRepository($refreshTokenRepository);
-        $this->authCodeTTL = $authCodeTTL;
-        $this->refreshTokenTTL = new \DateInterval('P1M');
         $this->database = $database;
+
+        parent::__construct($authCodeRepository, $refreshTokenRepository, $authCodeTTL);
     }
 
     public function respondToAccessTokenRequest(
