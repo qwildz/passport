@@ -13,9 +13,10 @@ trait SSOLogin
 
     protected function isSSONeedLogin(Request $request)
     {
+        $client = $this->getClient($request);
         $parameter = $this->getClientParameter($request);
-        if(isset($parameter['client_id']) && isset($parameter['state'])) {
-            return $request->session()->get('login.' . $parameter['client_id'] . '.' . $parameter['state'], true) === false;
+        if(isset($parameter['client_id']) && isset($parameter['state']) && $client) {
+            return $request->session()->get('login.' . $parameter['client_id'] . '.' . $parameter['state']) != true && !$client->sso;
         }
 
         return false;
