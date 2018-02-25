@@ -39,6 +39,7 @@ class Client extends Model
         'password_client' => 'bool',
         'revoked' => 'bool',
         'trusted' => 'bool',
+        'sso' => 'bool',
     ];
 
     /**

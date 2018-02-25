@@ -2,6 +2,7 @@
 
 namespace Laravel\Passport\Http\Controllers;
 
+use Illuminate\Contracts\Routing\UrlGenerator;
 use Illuminate\Http\Request;
 use Laravel\Passport\Passport;
 use Laravel\Passport\Bridge\User;
@@ -52,14 +53,16 @@ class AuthorizationController
      * @param  \Illuminate\Http\Request  $request
      * @param  \Laravel\Passport\ClientRepository  $clients
      * @param  \Laravel\Passport\TokenRepository  $tokens
+     * @param  UrlGenerator $url
      * @return \Illuminate\Http\Response
      */
     public function authorize(ServerRequestInterface $psrRequest,
                               Request $request,
                               ClientRepository $clients,
-                              TokenRepository $tokens)
+                              TokenRepository $tokens,
+                              UrlGenerator $url)
     {
-        return $this->withErrorHandling(function () use ($psrRequest, $request, $clients, $tokens) {
+        return $this->withErrorHandling(function () use ($psrRequest, $request, $clients, $tokens, $url) {
             $authRequest = $this->server->validateAuthorizationRequest($psrRequest);
 
             $scopes = $this->parseScopes($authRequest);
@@ -68,6 +71,11 @@ class AuthorizationController
                 $user = $request->user(),
                 $client = $clients->find($authRequest->getClient()->getIdentifier())
             );
+
+            // Client is not permit sso, re-login
+            if(!$client->sso && $request->session()->get('login.'.$client->getKey().'.'.$request->get('state'), null) === null) {
+                return $this->response->redirectGuest($url->route('login'));
+            }
 
             if (($token && $token->scopes === collect($scopes)->pluck('id')->all()) || $client->trusted) {
                 return $this->approveRequest($authRequest, $user);
