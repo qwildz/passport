@@ -5,16 +5,17 @@ namespace Laravel\Passport;
 use DateInterval;
 use Illuminate\Auth\RequestGuard;
 use Illuminate\Auth\Events\Logout;
+use Illuminate\Database\Connection;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Passport\Bridge\AuthCodeGrant;
 use Laravel\Passport\Guards\TokenGuard;
 use League\OAuth2\Server\CryptKey;
 use League\OAuth2\Server\ResourceServer;
 use League\OAuth2\Server\AuthorizationServer;
-use League\OAuth2\Server\Grant\AuthCodeGrant;
 use League\OAuth2\Server\Grant\ImplicitGrant;
 use League\OAuth2\Server\Grant\PasswordGrant;
 use Laravel\Passport\Bridge\PersonalAccessGrant;
@@ -144,7 +145,8 @@ class PassportServiceProvider extends ServiceProvider
         return new AuthCodeGrant(
             $this->app->make(Bridge\AuthCodeRepository::class),
             $this->app->make(Bridge\RefreshTokenRepository::class),
-            new DateInterval('PT10M')
+            new DateInterval('PT10M'),
+            $this->app->make(Connection::class)
         );
     }
 
